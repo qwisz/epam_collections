@@ -115,16 +115,26 @@ public class CustomArrayList<T> implements List<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T set(int index, T element) {
-        return null;
+        T old = (T) data[index];
+        data[index] = element;
+        return old;
     }
 
     @Override
     public void add(int index, T element) {
-
+        if (size == data.length) {
+            shrink();
+        }
+        System.arraycopy(data, index,data, index + 1,
+                size - index);
+        data[index] = element;
+        size++;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public T remove(int index) {
         int length = data.length - index;
         T value = (T) data[index];
@@ -156,5 +166,18 @@ public class CustomArrayList<T> implements List<T> {
     @Override
     public List<T> subList(int fromIndex, int toIndex) {
         return null;
+    }
+
+    private void shrink() {
+        if ((data.length / size) >= 4) {
+            if (data.length / 4 < CAPACITY)
+                changeCapacity(CAPACITY);
+            else
+                changeCapacity(data.length / 4);
+        }
+    }
+
+    private void changeCapacity(int newCapacity) {
+        data = Arrays.copyOf(data, newCapacity);
     }
 }

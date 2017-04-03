@@ -5,10 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 import static junit.framework.TestCase.assertFalse;
 import static org.hamcrest.CoreMatchers.is;
@@ -21,6 +18,7 @@ public class CustomListsTest {
 
     private List<String> list;
     public ArrayList<String> data = new ArrayList<>();
+    public LinkedList<String> data1 = new LinkedList<>();
 
     public CustomListsTest(List<String> list) {
         this.list = list;
@@ -49,6 +47,7 @@ public class CustomListsTest {
         list.add("aaaa");
         assertThat(list.isEmpty(), is(false));
 //        data.toArray();
+        data1.set(0, "ss");
     }
 
     @Test

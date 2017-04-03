@@ -1,9 +1,7 @@
 package ru.epam.training;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
+import java.lang.reflect.Array;
+import java.util.*;
 
 public class CustomLinkedList<T> implements List<T> {
 
@@ -43,12 +41,28 @@ public class CustomLinkedList<T> implements List<T> {
 
     @Override
     public Object[] toArray() {
-        return new Object[0];
+        Object[] array = new Object[size];
+        Node<T> e = head;
+        for (int i = 0; i < size; i++) {
+            array[i] = e.value;
+            e = e.next;
+        }
+        return array;
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <T1> T1[] toArray(T1[] a) {
-        return null;
+        if (a.length < size)
+            a = (T1[]) Array.newInstance(a.getClass().getComponentType(), size);
+        else if (a.length > size)
+            a[size] = null;
+        Node<T> e = head;
+        for (int i = 0; i < size; i++) {
+            a[i] = (T1) e.value;
+            e = e.next;
+        }
+        return a;
     }
 
     @Override
@@ -59,7 +73,7 @@ public class CustomLinkedList<T> implements List<T> {
         }
         iterator.next = new Node<>(t);
         size++;
-        return false;
+        return true;
     }
 
     @Override
@@ -116,12 +130,22 @@ public class CustomLinkedList<T> implements List<T> {
 
     @Override
     public T set(int index, T element) {
-        return null;
+        Node<T> node = getNodeByIndex(index);
+        T old = node.value;
+        node.value = element;
+        return old;
     }
 
     @Override
     public void add(int index, T element) {
-
+        Node<T> iterator = head;
+        for (int i = 0; i < index - 1; i++) {
+            iterator = iterator.next;
+        }
+        Node<T> temp = iterator.next;
+        iterator.next = new Node<>(element);
+        iterator.next.next = temp;
+        size++;
     }
 
     @Override
