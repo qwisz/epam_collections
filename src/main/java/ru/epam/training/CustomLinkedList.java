@@ -99,7 +99,8 @@ public class CustomLinkedList<T> implements List<T> {
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        return false;
+        c.forEach(this::add);
+        return true;
     }
 
     @Override
@@ -159,7 +160,19 @@ public class CustomLinkedList<T> implements List<T> {
 
     @Override
     public int indexOf(Object o) {
-        return 0;
+        int index = 0;
+        if (o == null) {
+            for (Node<T> x = head.next; x != null; x = x.next) {
+                if (x.value == null)
+                    return index;
+            }
+        } else {
+            for (Node<T> x = head.next; x != null; x = x.next) {
+                if (o.equals(x.value))
+                    return index;
+            }
+        }
+        return -1;
     }
 
     @Override
@@ -178,8 +191,22 @@ public class CustomLinkedList<T> implements List<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<T> subList(int fromIndex, int toIndex) {
-        return null;
+        checkBounds(fromIndex);
+        checkBounds(toIndex);
+        checkBounds(toIndex - fromIndex);
+        final LinkedList<T> list = new LinkedList<>();
+        int elementsRemained = toIndex - fromIndex;
+        for (Node node = getNodeByIndex(fromIndex); elementsRemained > 0; elementsRemained--) {
+            list.add((T)node.value);
+        }
+        return list;
+    }
+
+    private void checkBounds(int index) {
+        if (index < 0 || index >= size)
+            throw new IndexOutOfBoundsException();
     }
 
     private Node<T> getNodeByIndex(int index) {

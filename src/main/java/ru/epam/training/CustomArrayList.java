@@ -180,4 +180,9 @@ public class CustomArrayList<T> implements List<T> {
     private void changeCapacity(int newCapacity) {
         data = Arrays.copyOf(data, newCapacity);
     }
+
+    private void checkBounds(int index) {
+        if (index < 0 || index >= size)
+            throw new IndexOutOfBoundsException();
+    }
 }

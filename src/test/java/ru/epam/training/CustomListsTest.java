@@ -47,7 +47,7 @@ public class CustomListsTest {
         list.add("aaaa");
         assertThat(list.isEmpty(), is(false));
 //        data.toArray();
-        data1.set(0, "ss");
+        data1.indexOf("s");
     }
 
     @Test
