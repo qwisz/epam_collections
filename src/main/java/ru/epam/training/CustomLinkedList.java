@@ -94,7 +94,10 @@ public class CustomLinkedList<T> implements List<T> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        return false;
+        for (Object e : c)
+            if (!contains(e))
+                return false;
+        return true;
     }
 
     @Override
@@ -182,13 +185,61 @@ public class CustomLinkedList<T> implements List<T> {
 
     @Override
     public ListIterator<T> listIterator() {
-        return null;
+        return listIterator(0);
     }
 
     @Override
     public ListIterator<T> listIterator(int index) {
-        return null;
+        return new ListIterator<T>() {
+            int current = index;
+
+            @Override
+            public boolean hasNext() {
+                return current != size;
+            }
+
+            @Override
+            public T next() {
+                return getNodeByIndex(current++).value;
+            }
+
+            @Override
+            public boolean hasPrevious() {
+                return current != 0;
+            }
+
+            @Override
+            public T previous() {
+                return getNodeByIndex(current - 1).value;
+            }
+
+            @Override
+            public int nextIndex() {
+                return current + 1;
+            }
+
+            @Override
+            public int previousIndex() {
+                return current - 1;
+            }
+
+            @Override
+            public void remove() {
+                CustomLinkedList.this.remove(getNodeByIndex(current--));
+            }
+
+            @Override
+            public void set(T element) {
+                getNodeByIndex(index).value = element;
+            }
+
+            @Override
+            public void add(T element) {
+                CustomLinkedList.this.add(current++, element);
+            }
+        };
     }
+
 
     @Override
     @SuppressWarnings("unchecked")

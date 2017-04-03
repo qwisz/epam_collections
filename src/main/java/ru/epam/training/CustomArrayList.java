@@ -77,12 +77,16 @@ public class CustomArrayList<T> implements List<T> {
 
     @Override
     public boolean containsAll(Collection<?> c) {
-        return false;
+        for (Object e : c)
+            if (!contains(e))
+                return false;
+        return true;
     }
 
     @Override
     public boolean addAll(Collection<? extends T> c) {
-        return false;
+        c.forEach(this::add);
+        return true;
     }
 
     @Override
@@ -92,7 +96,19 @@ public class CustomArrayList<T> implements List<T> {
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        return false;
+        int i;
+        int j;
+        for (i = 0; i < size; i++)
+            if (c.contains(data[i]))
+                break;
+        if (i == size)
+            return false;
+
+        for (j = i++; i < size; i++)
+            if (!c.contains(data[i]))
+                data[j++] = data[i];
+        size -= i - j;
+        return true;
     }
 
     @Override
@@ -145,7 +161,10 @@ public class CustomArrayList<T> implements List<T> {
 
     @Override
     public int indexOf(Object o) {
-        return 0;
+        for (int i = 0; i < size; i++)
+            if (o.equals(data[i]))
+                return i;
+        return -1;
     }
 
     @Override
