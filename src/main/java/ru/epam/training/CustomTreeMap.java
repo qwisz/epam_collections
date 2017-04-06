@@ -24,7 +24,7 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
 
     @Override
     public boolean isEmpty() {
-        return true;
+        return (size == 0 && root == null);
     }
 
     @Override
@@ -48,7 +48,20 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
 
     @Override
     public V get(Object key) {
-        return null;
+        Objects.requireNonNull(key);
+        return findNode(root, (K) key).getValue();
+    }
+
+    private Node<K, V> findNode(Node<K, V> node, K key) {
+        if (node == null) {
+            return null;
+        } else if (node.getKey().compareTo(key) < 0) {
+            return findNode(node.right, key);
+        } else if (node.getKey().compareTo(key) > 0) {
+            return findNode(node.left, key);
+        } else {
+            return node;
+        }
     }
 
     @Override
@@ -88,7 +101,7 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
     }
 
     @Override
-    @SuppressWarnings("uchecked")
+    @SuppressWarnings("unchecked")
     public V remove(Object key) {
         if (key == null) {
             throw new NullPointerException("value is null");
@@ -153,34 +166,62 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
 
     @Override
     public void putAll(Map<? extends K, ? extends V> m) {
-
+        Objects.requireNonNull(m);
+        for (Map.Entry<? extends K, ? extends V> entry : m.entrySet()) {
+            put(entry.getKey(), entry.getValue());
+        }
     }
 
     @Override
     public void clear() {
-
+        size = 0;
+        root = null;
     }
 
     @Override
     public Set<K> keySet() {
-        return null;
+
+        Set<K> keySet = new HashSet<>();
+        for (Entry<K, V> node : getNodes()) {
+            keySet.add(node.getKey());
+        }
+        return keySet;
     }
 
     @Override
     public Collection<V> values() {
-        return null;
+        List<V> values = new ArrayList<>();
+        for (Entry<K, V> node : getNodes()) {
+            values.add(node.getValue());
+        }
+        return values;
+    }
+
+    private List<Map.Entry<K, V>> getNodes() {
+        List<Map.Entry<K, V>> nodes = new ArrayList<>();
+        orderedNodes(root, nodes);
+        return nodes;
+    }
+
+    private void orderedNodes(Node<K, V> node, List<Map.Entry<K, V>> nodes) {
+        if (node != null) {
+            orderedNodes(node.left, nodes);
+            nodes.add(node);
+            orderedNodes(node.right, nodes);
+        }
     }
 
     @Override
     public Set<Entry<K, V>> entrySet() {
-        return null;
+        return new HashSet<>(getNodes());
     }
+
 
     private int compare(K v1, K v2) {
         return comparator == null ? v1.compareTo(v2) : comparator.compare(v1, v2);
     }
 
-    private class Node<K extends Comparable<K>, V> {
+    private class Node<K extends Comparable<K>, V> implements Map.Entry<K, V> {
         private final K key;
         private V value;
         private Node<K, V> left;
@@ -191,6 +232,20 @@ public class CustomTreeMap<K extends Comparable<K>, V> implements Map<K, V> {
             this.value = value;
         }
 
+        public V getValue() {
+            return value;
+        }
+
+        @Override
+        public V setValue(V value) {
+            V prev = this.value;
+            this.value = value;
+            return prev;
+        }
+
+        public K getKey() {
+            return key;
+        }
     }
 
 }
