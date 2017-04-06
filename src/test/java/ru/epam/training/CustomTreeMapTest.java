@@ -5,6 +5,7 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.IntStream;
 
 import static org.hamcrest.CoreMatchers.equalTo;
